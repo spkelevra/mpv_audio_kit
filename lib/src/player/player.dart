@@ -191,6 +191,14 @@ class Player extends _PlayerBase
       return;
     }
     await _prop('pause', shouldPlay ? 'no' : 'yes');
+    // Apply per-Media audio effects **before** loading the file so mpv's DSP
+    // pipeline is ready when decoding starts — avoids unfiltered transient.
+    if (media.audioEffects != null) {
+      final af = media.audioEffects!.toAfChain();
+      if (af.isNotEmpty) {
+        await _prop('af', af);
+      }
+    }
     final opts = _buildLoadfileOptions(media);
     if (opts.isEmpty) {
       await _commandChecked(['loadfile', resolved.uri, 'replace']);

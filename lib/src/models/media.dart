@@ -3,6 +3,7 @@
 // Use of this source code is governed by BSD 3-Clause license that can be found in the LICENSE file.
 
 import '../internals/unset_sentinel.dart';
+import '../generated/audio_effects_settings.dart' show AudioEffects;
 
 bool _mapEqDyn(Map<String, Object?>? a, Map<String, Object?>? b) {
   if (identical(a, b)) return true;
@@ -114,6 +115,12 @@ final class Media {
   /// playlist entries. Must be positive when set.
   final int? httpChunkSize;
 
+  /// Optional audio DSP effects that are applied **before** the file is loaded
+  /// into mpv, so decoding starts with the filter chain in place. This avoids
+  /// the brief unfiltered transient that would otherwise occur when a track is
+  /// opened and effects are set afterwards.
+  final AudioEffects? audioEffects;
+
   /// Creates an immutable media item for [uri], with optional consumer
   /// [extras], per-request [httpHeaders] and [httpChunkSize].
   const Media(
@@ -122,6 +129,7 @@ final class Media {
     this.httpHeaders,
     this.httpChunkSize,
     this.demuxerLavfOptions,
+    this.audioEffects,
   });
 
   /// Returns a copy with the given fields replaced. Pass `null` for
@@ -133,6 +141,7 @@ final class Media {
     Object? httpHeaders = unset,
     Object? httpChunkSize = unset,
     Object? demuxerLavfOptions = unset,
+    Object? audioEffects = unset,
   }) =>
       Media(
         uri ?? this.uri,
@@ -148,6 +157,9 @@ final class Media {
         demuxerLavfOptions: identical(demuxerLavfOptions, unset)
             ? this.demuxerLavfOptions
             : demuxerLavfOptions as Map<String, String>?,
+        audioEffects: identical(audioEffects, unset)
+            ? this.audioEffects
+            : audioEffects as AudioEffects?,
       );
 
   @override
