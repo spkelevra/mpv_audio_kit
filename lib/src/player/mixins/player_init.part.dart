@@ -123,7 +123,7 @@ mixin _InitModule on _PlayerBase {
         'keep-open': 'yes',
         'idle': 'yes',
         'osc': 'no',
-        'ytdl': 'no',
+        'ytdl': configuration.enableYtDlp ? 'yes' : 'no',
         'load-stats-overlay': 'no',
         'load-console': 'no',
         'load-commands': 'no',

@@ -65,6 +65,15 @@ class PlayerConfiguration {
   /// path (e.g. `getTemporaryDirectory()`) when spilling the cache to disk.
   final String? demuxerCacheDir;
 
+  /// Enable mpv's built-in yt-dlp integration for resolving YouTube and other
+  /// streaming URLs directly without an external binary (mpv's --ytdl).
+  ///
+  /// When `true`, passing a YouTube URL to [Player.open] will resolve the
+  /// stream internally via mpv's bundled yt-dlp scripts. Requires libmpv to
+  /// have been compiled with yt-dlp support (--enable-ytdl at build time).
+  /// Default: `false` (disabled, for backward compatibility and lower overhead).
+  final bool enableYtDlp;
+
   /// Creates a configuration; every field defaults to its documented value.
   const PlayerConfiguration({
     this.autoPlay = false,
@@ -76,5 +85,6 @@ class PlayerConfiguration {
     this.hlsBitrate = HlsBitrate.max,
     this.normalizeDownmix = false,
     this.demuxerCacheDir,
+    this.enableYtDlp = false,
   });
 }
