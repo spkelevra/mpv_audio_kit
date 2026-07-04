@@ -24,6 +24,7 @@
 library;
 
 export 'src/dsp/band_processor.dart' show BandProcessor;
+export 'src/dsp/ring_spectrum_pipeline.dart' show RingSpectrumPipeline;
 export 'src/events/mpv_exception.dart' show MpvException;
 export 'src/events/mpv_hook_event.dart' show MpvHookEvent;
 export 'src/events/mpv_log_entry.dart' show MpvLogEntry;
