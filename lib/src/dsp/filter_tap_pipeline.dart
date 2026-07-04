@@ -39,13 +39,11 @@ class FilterTapPipeline {
   FilterTapPipeline({
     required AsyncPropertyGet asyncGet,
     required AsyncPropertySet asyncSet,
-    // 33 ms ≈ 30 Hz — matches the lib's spectrum pipeline default.
-    // The C side now returns the slice of the rolling ring aligned
-    // to the AO playback PTS, so the slice walks forward smoothly
-    // at the audio output rate regardless of the chain's bursty
-    // write cadence. 30 Hz reads are enough; the slice content
-    // changes every poll because `playing_audio_pts` is monotonic.
-    Duration pollInterval = const Duration(milliseconds: 33),
+    // Poll interval for audio-tap-frames. Default 100ms (~10 Hz) accounts for
+    // the async FFI round-trip + NODE decode overhead on Android (measured ~80-140ms).
+    // The _polling guard drops overlapping polls, so a too-aggressive interval
+    // causes most polls to be skipped. 100ms gives stable delivery without waste.
+    Duration pollInterval = const Duration(milliseconds: 100),
   })  : _asyncGet = asyncGet,
         _asyncSet = asyncSet,
         _pollInterval = pollInterval;
