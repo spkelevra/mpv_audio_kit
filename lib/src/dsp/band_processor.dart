@@ -284,6 +284,28 @@ class BandProcessor {
     _bandEndBin = end;
   }
 
+  /// Return a snapshot of the latest smoothed bands without processing
+  /// new PCM. Used by [RingSpectrumPipeline] to decouple FFT computation
+  /// (which runs at the filter-tap's native rate) from stream emissions
+  /// (which are throttled to [emitInterval]).
+  ///
+  /// Returns `null` if no FFT has run yet or the internal buffers are
+  /// not initialized.
+  FftFrame? snapshot() {
+    if (_smoothedBands == null || _rawBins == null) return null;
+    final bandCount = _settings.bandCount;
+    final bins = Float32List(_rawBins!.length)..setAll(0, _rawBins!);
+    final bands = Float32List(bandCount)..setAll(0, _smoothedBands!);
+    return FftFrame(
+      bins: bins,
+      bands: bands,
+      timestamp: Duration.zero,
+      sampleRate: _lastBandSampleRate,
+      bandLowHz: _settings.bandLowHz,
+      bandHighHz: _settings.bandHighHz,
+    );
+  }
+
   FftFrame _emit(Duration timestamp, int sampleRate) {
     final bandCount = _settings.bandCount;
     final bins = Float32List(_rawBins!.length)..setAll(0, _rawBins!);
